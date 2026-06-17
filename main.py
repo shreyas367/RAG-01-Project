@@ -52,44 +52,49 @@ print("Vectors Stored:", index.ntotal)
 # -----------------------------
 # 5. User Query
 # -----------------------------
-query = "What is relational algebra?"
+questions = [
+    "What is DBMS?",
+    "What is relational algebra?",
+    "What is relational calculus?",
+    "What are procedural query languages?",
+    "What are non procedural query languages?",
+    "Explain select operation.",
+    "Explain project operation.",
+    "What is tuple relational calculus?",
+    "What is domain relational calculus?",
+    "Explain EF Codd's 12 rules."
+]
+for query in questions:
 
-print("\nQUESTION:")
-print(query)
+    print("\n" + "=" * 80)
+    print("QUESTION:")
+    print(query)
 
+    # Embed Query
+    query_embedding = model.encode(query)
 
-# -----------------------------
-# 6. Embed Query
-# -----------------------------
-query_embedding = model.encode(query)
+    # Retrieve Chunks
+    results = search(
+        index,
+        query_embedding,
+        k=3
+    )
 
+    context = ""
 
-# -----------------------------
-# 7. Retrieve Top Chunks
-# -----------------------------
-results = search(
-    index,
-    query_embedding,
-    k=3
-)
+    print("\nTOP MATCHING CHUNKS:\n")
 
-context = ""
+    for idx in results:
 
-print("\nTOP MATCHING CHUNKS:\n")
+        print("=" * 60)
+        print(chunks[idx][:300])
+        print()
 
-for idx in results:
-    print("=" * 60)
-    print(chunks[idx][:500])
-    print()
+        context += chunks[idx]
+        context += "\n\n"
 
-    context += chunks[idx]
-    context += "\n\n"
-
-
-# -----------------------------
-# 8. Build Prompt
-# -----------------------------
-prompt = f"""
+    # Build Prompt
+    prompt = f"""
 You are a DBMS tutor.
 
 Answer ONLY from the provided context.
@@ -108,18 +113,15 @@ Provide a clear and concise answer.
 Answer:
 """
 
+    # Generate Answer
+    answer = generate_answer(prompt)
 
-# -----------------------------
-# 9. Generate Answer using Llama 3
-# -----------------------------
-answer = generate_answer(prompt)
+    print("\n" + "=" * 60)
+    print("FINAL ANSWER")
+    print("=" * 60)
+
+    print(answer)
 
 
-# -----------------------------
-# 10. Print Final Answer
-# -----------------------------
-print("\n" + "=" * 60)
-print("FINAL ANSWER")
-print("=" * 60)
 
-print(answer)
+
