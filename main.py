@@ -1,6 +1,5 @@
 from src.rag import ask_question
 
-
 while True:
 
     query = input("\nAsk: ")
@@ -13,5 +12,10 @@ while True:
     print("\nANSWER:\n")
     print(result["answer"])
 
-    print("\nSources:")
-    print(result["sources"])
+    print("\nSources:\n")
+
+    for source in result["sources"]:
+
+        print(
+            f"📄 {source['document']}  |  Page {source['page']}"
+        )

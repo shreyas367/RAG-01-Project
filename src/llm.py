@@ -1,18 +1,30 @@
-import requests
+import os
 
+from dotenv import load_dotenv
 
-def generate_answer(prompt):
+load_dotenv()
 
-    response = requests.post(
-        "http://localhost:11434/api/generate",
-        json={
-            "model": "qwen2.5vl:3b",
-            "prompt": prompt,
-            "stream": False
-        }
+from groq import Groq
+
+client=Groq(api_key=os.getenv("GROQ_API_KEY")
+            )
+
+def generate_answer(prompt: str):
+
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        temperature=0.2,
+        max_tokens=512
     )
 
+    return response.choices[0].message.content
+    
 
-    response.raise_for_status()
 
-    return response.json()["response"]
+ 

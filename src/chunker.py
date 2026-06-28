@@ -1,17 +1,42 @@
-def chunk_text(text, chunk_size=500, overlap=100):
+def chunk_text(text, page_number, document_name, chunk_size=200):
 
-    chunks = []
+    paragraphs = text.split("\n")
 
-    start = 0
+    metadata = []
 
-    while start < len(text):
+    current_chunk = ""
 
-        end = start + chunk_size
+    for para in paragraphs:
 
-        chunks.append(
-            text[start:end]
+        para = para.strip()
+
+        if not para:
+            continue
+
+        if len(current_chunk) + len(para) < chunk_size:
+
+            current_chunk += para + "\n"
+
+        else:
+
+            metadata.append(
+                {
+                    "text": current_chunk,
+                    "page": page_number,
+                    "document": document_name
+                }
+            )
+
+            current_chunk = para + "\n"
+
+    if current_chunk:
+
+        metadata.append(
+            {
+                "text": current_chunk,
+                "page": page_number,
+                "document": document_name
+            }
         )
 
-        start += chunk_size - overlap
-
-    return chunks
+    return metadata

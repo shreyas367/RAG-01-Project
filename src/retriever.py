@@ -1,7 +1,7 @@
 import faiss
 import numpy as np
 
-def search(index, query_embedding, k=3):
+def search(index, query_embedding, k=6):
 
     query_embedding = np.array(
         [query_embedding],
